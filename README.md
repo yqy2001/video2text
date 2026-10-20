@@ -65,10 +65,11 @@ Requires Python ≥ 3.9. A GPU is optional.
 ```bash
 video2text "https://www.youtube.com/watch?v=VIDEO_ID"
 video2text "https://www.bilibili.com/video/BVxxxxxxxxxx" -l zh --srt
-python -m video2text URL1 URL2 -o out/ --timestamps
+python -m video2text URL1 URL2 -o out/ --no-timestamps
 ```
 
-Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`).
+Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`). Each line is
+`[hh:mm:ss] text`; pass `--no-timestamps` for plain text.
 
 | Option | Description |
 |---|---|
@@ -81,7 +82,7 @@ Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`).
 | `--no-vad` | Disable voice-activity filtering (it's retried off automatically if it finds no speech, e.g. songs) |
 | `--keep-traditional` | Don't convert Chinese output to Simplified characters |
 | `--srt` | Also write an `.srt` subtitle file |
-| `--timestamps` | Prefix each line of the `.txt` with `[hh:mm:ss]` |
+| `--no-timestamps` | Plain text: drop the `[hh:mm:ss]` prefix from each `.txt` line |
 | `--cookies FILE` | Netscape `cookies.txt` for yt-dlp (login-only / age-restricted videos) |
 | `--proxy URL` | Proxy for downloading, e.g. `http://127.0.0.1:7890` |
 | `--keep-audio` | Keep the downloaded audio next to the transcript |

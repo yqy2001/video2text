@@ -40,7 +40,8 @@ def parse_args(argv=None):
     p.add_argument("--keep-traditional", action="store_true",
                    help="don't convert Chinese output to Simplified characters")
     p.add_argument("--srt", action="store_true", help="also write an .srt subtitle file")
-    p.add_argument("--timestamps", action="store_true", help="prefix each .txt line with [hh:mm:ss]")
+    p.add_argument("--no-timestamps", dest="timestamps", action="store_false",
+                   help="write plain text without the [hh:mm:ss] prefix on each .txt line")
     p.add_argument("--cookies", help="cookies.txt file passed to yt-dlp")
     p.add_argument("--proxy", help="proxy URL passed to yt-dlp, e.g. http://127.0.0.1:7890")
     p.add_argument("--keep-audio", action="store_true", help="keep the downloaded audio in the output dir")
