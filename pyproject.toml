@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video2text"
+version = "0.1.0"
+description = "Transcribe YouTube / Bilibili videos to text with Whisper"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["faster-whisper>=1.1", "yt-dlp", "opencc-python-reimplemented"]
+
+[project.scripts]
+video2text = "video2text.cli:main"
+
+[tool.setuptools]
+packages = ["video2text"]
