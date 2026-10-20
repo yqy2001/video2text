@@ -6,11 +6,59 @@ Transcribe a YouTube or Bilibili video to a text file (speech-to-text).
 - Transcribes with [faster-whisper](https://github.com/SYSTRAN/faster-whisper)
 - Works on GPU or CPU — no ffmpeg required
 
-## Install
+## Setup on a new machine
 
-```bash
-pip install -e .          # or: pip install -r requirements.txt
-```
+Requires Python ≥ 3.9. A GPU is optional.
+
+1. **Get the code and install** (use `--user` if system site-packages isn't writable; the
+   `video2text` command then lands in `~/.local/bin`, so make sure that's on your `PATH`):
+
+   ```bash
+   git clone https://github.com/yqy2001/video2text.git   # or `git pull` if already cloned
+   cd video2text
+   pip install --user -e .
+   export PATH="$HOME/.local/bin:$PATH"
+   ```
+
+2. **If Hugging Face is slow or rate-limited (HTTP 429)**, use the mirror. Add it to `~/.bashrc` so it
+   persists:
+
+   ```bash
+   echo 'export HF_ENDPOINT=https://hf-mirror.com' >> ~/.bashrc && source ~/.bashrc
+   ```
+
+3. **GPU machines only — check the NVIDIA driver:**
+
+   ```bash
+   nvidia-smi | head -4    # look at "Driver Version"
+   ```
+
+   With an older driver (e.g. 535 / CUDA 12.4), recent `ctranslate2` wheels fail with
+   `cudaErrorInvalidDevice`. Pin the last compatible version:
+
+   ```bash
+   pip install --user ctranslate2==4.5.0
+   ```
+
+4. **Smoke test with the tiny model** (75 MB download, takes seconds):
+
+   ```bash
+   video2text "https://www.youtube.com/watch?v=dQw4w9WgXcQ" -m tiny -o /tmp/v2t_test
+   ```
+
+   The first log line shows the device: `Loading model tiny on cuda (float16)` on a GPU,
+   or `on cpu (int8, N threads)` otherwise.
+
+5. **Optional: pre-download the default model** so the first real run doesn't wait. It's about 3 GB,
+   which can take close to an hour on a slow link:
+
+   ```bash
+   python3 -c "from faster_whisper import WhisperModel; WhisperModel('large-v3', device='cpu')"        # GPU default
+   python3 -c "from faster_whisper import WhisperModel; WhisperModel('large-v3-turbo', device='cpu')"  # CPU default
+   ```
+
+   Models are cached in `~/.cache/huggingface/hub`. Copying that directory from another machine
+   works too.
 
 ## Usage
 
@@ -41,7 +89,7 @@ Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`).
 ## Notes
 
 - **No GPU?** The device is auto-detected. On CPU the tool uses `large-v3-turbo` with int8
-  quantization on all cores. For faster (less accurate) results, try `-m small`.
+  quantization on all available cores (respecting `OMP_NUM_THREADS` / container CPU quota). For faster (less accurate) results, try `-m small`.
 - Models are downloaded from Hugging Face on first use (~1.5–3 GB for the large models).
   Set `HF_ENDPOINT=https://hf-mirror.com` if Hugging Face is unreachable.
 - Chinese output is converted to Simplified characters (OpenCC); pass `--keep-traditional` to opt out.
