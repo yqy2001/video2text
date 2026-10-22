@@ -69,7 +69,24 @@ python -m video2text URL1 URL2 -o out/ --no-timestamps
 ```
 
 Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`). Each line is
-`[hh:mm:ss] text`; pass `--no-timestamps` for plain text.
+`[hh:mm:ss] Speaker N: text`; pass `--no-timestamps` to drop the time and `--no-speakers` to drop
+the speaker.
+
+### Speaker labels
+
+By default, each line is labeled with who is speaking (`[00:02:32] Speaker 2: ...`, also in the
+`.srt`). If only one speaker is found, the labels are left off. This uses `sherpa-onnx` (installed
+with the package). Its models (~35 MB, from GitHub, no Hugging Face token needed) download to
+`~/.cache/video2text/diarization` on first use. It runs on CPU and takes ~15 s for a 3-minute video.
+Pass `--no-speakers` to skip it.
+
+- Speakers are numbered by first appearance. They're anonymous: you get "Speaker 2", not a name.
+- If you know how many people talk, pass `--num-speakers N`. It's more reliable than estimating.
+- Too many speakers (one person split in two)? Raise `--speaker-threshold` (default 0.6), e.g. 0.7.
+  Too few (two people merged)? Lower it.
+- Labels are per transcript line, so if a speaker change falls inside one Whisper segment, the whole
+  line goes to whoever talks longer. Quick back-and-forth between similar voices (for example, two
+  people of the same gender on one mic) can get merged into one speaker.
 
 | Option | Description |
 |---|---|
@@ -81,6 +98,9 @@ Output goes to `./transcripts/<video title>.txt` (plus `.srt` with `--srt`). Eac
 | `--threads N` | CPU threads (default: `OMP_NUM_THREADS` or available CPUs) |
 | `--no-vad` | Disable voice-activity filtering (it's retried off automatically if it finds no speech, e.g. songs) |
 | `--keep-traditional` | Don't convert Chinese output to Simplified characters |
+| `--no-speakers` | Don't label lines with the speaker (skips diarization) |
+| `--num-speakers N` | Number of speakers, if known (default: estimate) |
+| `--speaker-threshold X` | Speaker clustering threshold; lower = more speakers (default 0.6) |
 | `--srt` | Also write an `.srt` subtitle file |
 | `--no-timestamps` | Plain text: drop the `[hh:mm:ss]` prefix from each `.txt` line |
 | `--cookies FILE` | Netscape `cookies.txt` for yt-dlp (login-only / age-restricted videos) |

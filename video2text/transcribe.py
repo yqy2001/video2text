@@ -21,6 +21,7 @@ class Segment:
     start: float
     end: float
     text: str
+    speaker: Optional[int] = None  # set by diarize.assign_speakers
 
 
 def resolve_device(device: str) -> str:

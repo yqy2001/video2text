@@ -25,3 +25,10 @@ Entry point: `video2text/cli.py`; run without installing via `PYTHONPATH=. pytho
 - Chinese: the Simplified `initial_prompt` only steers the first window — Whisper drifts into Traditional
   mid-transcript — so `transcribe()` also converts with OpenCC t2s. VAD also drops the sung parts of
   concert/music videos that also have speech; `--no-vad` keeps them.
+- Speaker diarization (on by default, `--no-speakers` to skip; `diarize.py`) uses sherpa-onnx (pyannote-segmentation-3.0 + CAM++ zh/en
+  ONNX from GitHub releases; GitHub is fast from the pods, no HF token). pyannote.audio itself was avoided:
+  gated HF models + it wants to replace the preinstalled torch.
+- Speakers are assigned per Whisper segment, NOT per word: `word_timestamps=True` changes faster-whisper's
+  seek windows and set off large-v3 repetition loops (one phrase ×15) on a 12-min interview. Don't re-add it.
+- Diarization test clips (Bilibili): `av117468110524754` (12 min, male host + female guest + drama
+  excerpts, separates well); `av639117650` (3 min, Q&A between similar voices, partly merged).

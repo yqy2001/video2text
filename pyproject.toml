@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Transcribe YouTube / Bilibili videos to text with Whisper"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["faster-whisper>=1.1", "yt-dlp", "opencc-python-reimplemented"]
+dependencies = ["faster-whisper>=1.1", "yt-dlp", "opencc-python-reimplemented", "sherpa-onnx"]
 
 [project.scripts]
 video2text = "video2text.cli:main"
