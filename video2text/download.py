@@ -60,6 +60,9 @@ def download_audio(
         "no_warnings": False,
         "logger": _Logger(),
         "progress_hooks": [_progress_hook],
+        # YouTube's n-challenge needs a JS runtime (+ the yt-dlp-ejs package); yt-dlp
+        # only enables deno by default, but the pods have node.
+        "js_runtimes": {"deno": {}, "node": {}},
     }
     if cookies:
         opts["cookiefile"] = cookies

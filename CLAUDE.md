@@ -22,6 +22,17 @@ Entry point: `video2text/cli.py`; run without installing via `PYTHONPATH=. pytho
   `os.cpu_count()` — it made CPU inference ~40× slower. `default_cpu_threads()` in `transcribe.py` handles this.
 - Outbound proxy exits in Beijing → some YouTube videos report "Video unavailable" (region block), not a bug.
   `dQw4w9WgXcQ` is playable for testing; `jNQXAC9IVRw` is not. Bilibili works directly.
+- The user may have an SSH reverse tunnel from a machine that can reach YouTube (`ssh -R 127.0.0.1:1080`,
+  i.e. a SOCKS proxy; check `ss -ltn | grep 1080`) → `--proxy socks5h://127.0.0.1:1080` (exits in Tokyo).
+  Some videos still get "Sign in to confirm you're not a bot" there → need `--cookies cookies.txt`
+  (gitignored). yt-dlp only counts cookies as logged in if `LOGIN_INFO` is present; check the
+  cookie *names* before running (an export from a google.com tab has no youtube.com cookies).
+- Logged-in YouTube requires solving the "n challenge" ("The page needs to be reloaded" error otherwise):
+  needs the `yt-dlp-ejs` package + a JS runtime. `download.py` enables node (pods have it; deno is absent).
+  The user-facing step list is in README → "YouTube through another machine (SSH tunnel)".
+- Pod SSH: the platform's sshd (`-f ~/.arnold_ssh/sshd_config`) listens on `$MERLIN_SSHD_PORT` at
+  `$MERLIN_SSHD_HOST` (IPv6) and reads keys only from `~/.arnold_ssh/authorized_keys`, not `~/.ssh/`.
+  Don't put concrete pod IPs in README (public repo); they change per pod anyway.
 - Bilibili returns HTTP 412 after a handful of quick downloads from the same IP; it clears after a while.
   Don't burn test runs re-downloading the same video — use `--keep-audio` and reuse the file.
 - Installing faster-whisper bumps protobuf to 7.x, which conflicts with the preinstalled tensorflow-cpu.
