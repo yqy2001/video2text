@@ -3,6 +3,13 @@
 CLI that downloads a YouTube/Bilibili video's audio (yt-dlp) and transcribes it (faster-whisper).
 Entry point: `video2text/cli.py`; run without installing via `PYTHONPATH=. python3 -m video2text URL`.
 
+## User preference: GPU transcription outside the sandbox
+
+- Always run transcription outside the execution sandbox with `--device cuda --compute-type float16`,
+  using the execution tool's escalation mechanism. Do not fall back to CPU based on GPU checks inside
+  the sandbox. This machine has 8 H20 GPUs; CUDA FP16 inference was verified outside the sandbox on
+  2026-10-22. See [AGENTS.md](AGENTS.md) for the full instruction.
+
 ## Dev environment gotchas (company k8s pods; seen on multiple machines)
 
 - `pip install` needs `--user` (system site-packages is read-only); console scripts go to `~/.local/bin`.
