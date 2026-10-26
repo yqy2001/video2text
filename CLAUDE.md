@@ -10,6 +10,11 @@ Entry point: `video2text/cli.py`; run without installing via `PYTHONPATH=. pytho
   the sandbox. This machine has 8 H20 GPUs; CUDA FP16 inference was verified outside the sandbox on
   2026-10-22. See [AGENTS.md](AGENTS.md) for the full instruction.
 
+## User preference: git workflow
+
+- Commit and push directly on `main`; don't create feature branches or PRs. `git push` is pre-allowed
+  in `.claude/settings.json`.
+
 ## Dev environment gotchas (company k8s pods; seen on multiple machines)
 
 - `pip install` needs `--user` (system site-packages is read-only); console scripts go to `~/.local/bin`.
