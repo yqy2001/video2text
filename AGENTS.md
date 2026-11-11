@@ -1,5 +1,13 @@
 # video2text — agent instructions
 
+## 存储位置（2026-11-05，后续修订）
+
+用户已改为按用途安排存储。本仓库源码、`.git` 和必要运行环境放持久盘 `/opt/tiger/video2text`。
+音视频、模型权重和转写材料继续放 HDFS；本项目默认材料目录为
+`/mnt/hdfs/byte_data_seed_wl/projects/artifacts/video2text/`。
+仓库的 `transcripts` 和 `artifacts` 通过链接访问 HDFS；凭据和必要运行状态留在持久盘。
+旧 HDFS 仓库路径是指向本机代码的兼容链接，不作为新仓库位置。
+
 ## 用户的转写偏好
 
 - 用户明确要求：以后转写都在沙箱外使用 GPU。通过执行工具的
